@@ -1,89 +1,48 @@
-# GraphMind -- Knowledge Graph Construction and Reasoning Engine
+# GraphMind — Rule-based entity graphs
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
-[![Streamlit](https://img.shields.io/badge/Streamlit-1.31%2B-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)](https://streamlit.io)
-[![spaCy](https://img.shields.io/badge/spaCy-3.7%2B-09A3D5?style=flat-square&logo=spacy&logoColor=white)](https://spacy.io)
-[![NetworkX](https://img.shields.io/badge/NetworkX-3.2%2B-4C9A2A?style=flat-square)](https://networkx.org)
-[![License: MIT](https://img.shields.io/badge/License-MIT-00ff88?style=flat-square)](LICENSE)
+A Streamlit app that turns text into a heuristic entity graph. Regex patterns and seed-name lists identify PERSON, ORG, LOCATION, DATE and TECHNOLOGY entities. Entities found in the same sentence are connected, with edge labels chosen from keyword and entity-type rules.
 
-Transform unstructured text into interactive knowledge graphs using rule-based NER, graph reasoning, and community detection -- all in a Streamlit interface.
+The graph is useful for exploring what those rules extract; it is not a verified knowledge base or a formal reasoning system.
 
----
+## Run locally
 
-## Features
-
-| Feature | Description |
-|---|---|
-| **Rule-Based NER** | Regex-powered entity extraction -- no large model downloads required |
-| **5 Entity Types** | PERSON, ORG, LOCATION, DATE, TECHNOLOGY |
-| **Relationship Inference** | Sentence co-occurrence + keyword heuristics for edge labelling |
-| **Interactive Graph** | Drag, zoom, hover -- powered by PyVis with dark theme |
-| **Community Detection** | Greedy modularity clustering via NetworkX |
-| **Analytics Dashboard** | Plotly charts for entity distributions, centrality, communities |
-| **Demo Texts** | 3 curated multi-paragraph texts for instant exploration |
-| **Custom Input** | Paste any text and build a graph on the fly |
-
----
-
-## Quick Start
+Use Python 3.10+:
 
 ```bash
 git clone https://github.com/Zinga18018/Knowledge-Graph-Construction-and-Reasoning-Engine.git
 cd Knowledge-Graph-Construction-and-Reasoning-Engine
 python -m venv .venv
-.venv\Scripts\activate          # Windows
-source .venv/bin/activate       # macOS / Linux
-pip install -r requirements.txt
+source .venv/bin/activate
+python -m pip install -r requirements.txt
 streamlit run app.py
 ```
 
-The app will open at **http://localhost:8501**.
+On Windows PowerShell, replace the activation line with `.\.venv\Scripts\Activate.ps1`. Open the local URL printed by Streamlit, normally `http://localhost:8501`.
 
----
+Choose a bundled demo or paste text, select entity types and build the graph. The current extractor does not load a spaCy model; spaCy is listed in [requirements.txt](requirements.txt), but the implemented extraction is rule-based. No model download, API key or GPU is needed for the extraction algorithm. Package installation still requires its dependencies.
 
-## Tech Stack
+## What the app shows
 
-| Layer | Technology | Purpose |
-|---|---|---|
-| **Frontend** | Streamlit | Interactive web dashboard |
-| **NER Engine** | Regex + Rule-based | Named entity recognition |
-| **Graph Engine** | NetworkX | Graph construction and algorithms |
-| **Visualisation** | PyVis | Interactive HTML graph rendering |
-| **Charts** | Plotly | Statistical visualisations |
-| **Data** | Pandas | Tabular entity / relationship display |
+- A draggable PyVis graph, with entity labels and relationship tooltips.
+- Entity and relationship tables.
+- Plotly summaries of entity types, degree centrality and communities.
+- NetworkX graph statistics and greedy-modularity communities on an undirected projection.
 
----
+[app.py](app.py) connects the interface to [src/extractor.py](src/extractor.py), [src/graph_builder.py](src/graph_builder.py) and [src/visualizer.py](src/visualizer.py). Bundled examples are in [src/sample_texts.py](src/sample_texts.py).
 
-## Project Structure
+## Interpretation and current limits
 
-```
-Knowledge-Graph-Construction-and-Reasoning-Engine/
-|-- app.py                  # Streamlit entry point
-|-- requirements.txt        # Python dependencies
-|-- README.md
-|-- .gitignore
-|-- src/
-|   |-- __init__.py
-|   |-- extractor.py        # Rule-based NER engine
-|   |-- graph_builder.py    # NetworkX knowledge graph wrapper
-|   |-- visualizer.py       # PyVis + Plotly rendering
-|   +-- sample_texts.py     # Curated demo texts
-```
+Co-occurrence does not prove a relationship. Edge direction and labels come from heuristics, not fact checking; negation, ambiguous names and coreference can produce misleading results. Community membership and centrality describe this constructed graph, not real-world importance. The bundled prose is demonstration input, not verified evidence.
 
----
+The “minimum mentions” slider is currently not passed into the extraction/filtering pipeline, so changing it does not implement the advertised filter. This is a known code limitation, not fixed by the README.
 
-## Entity Color Palette
+No labeled extraction evaluation, reasoning benchmark or automated test suite is committed. Dependencies have minimum versions rather than a reproducible lockfile.
 
-| Entity Type | Color | Hex |
-|---|---|---|
-| PERSON | Green | `#00ff88` |
-| ORG | Cyan | `#00d4ff` |
-| LOCATION | Purple | `#a855f7` |
-| TECHNOLOGY | Amber | `#f59e0b` |
-| DATE | Pink | `#ec4899` |
-
----
+Setup and browser flows were not rerun for this documentation update.
 
 ## License
 
 MIT License -- Yogesh Kuchimanchi
+
+The attribution and license statement above are retained from the existing README. The repository currently has no `LICENSE` file; no license text or new grant is supplied by this documentation.
+
